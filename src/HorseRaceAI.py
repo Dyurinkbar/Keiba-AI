@@ -3,17 +3,18 @@ from bs4 import BeautifulSoup as bs
 import re
 
 import Horse
-import StringUtil
+import StringUtils
+import PathUtils
 
 
-# urlを入力
+# URLを入力
 def input_race_url():
     print("\nレースのURLを入力してください。\n→ ", end="")
     race_url = input()
     return str(race_url)
 
 
-# urlからBeautifulSoupを取得
+# URLからHTMLを取得
 def get_soup(url):
     res = requests.get(url)
     soup = bs(res.content, "html.parser")
@@ -27,16 +28,14 @@ def print_all_html(soup):
 
 # 文字データをtxtに出力
 def file_writer(content, file_name):
-    txt_file = open(file_name, "w", encoding="UTF-8")
+    txt_file = open(PathUtils.path_out + file_name, "w", encoding="UTF-8")
     txt_file.write(content)
     txt_file.close()
+    print("\n" + file_name + "を出力しました。\n")
 
 
 # 競走馬のデータを取得
 def get_horse_status(soup):
-    # 出馬表の部分を取得
-    # shutuba_table = soup.find("table", class_=re.compile("^Shutuba_Table"))
-    # shutuba_table = soup.select("table.Shutuba_Table.ShutubaTable")
     '''データ取得'''
     # 競走馬のリストを取得
     horse_list = soup.select("tr.HorseList")
@@ -68,7 +67,7 @@ def get_horse_status(soup):
         horse.set_name(horse_name[n].text)
         horse.set_seirei(horse_seirei[n].text)
         horse.set_penalty_weight(horse_penalty_weight[n].text)
-        horse.set_jockey(StringUtil.replace_not_blank(jockey_name[n].text))
+        horse.set_jockey(StringUtils.replace_not_blank(jockey_name[n].text))
         horse.set_trainer_place(horse_trainer_place[n].text)
         horse.set_grade_url(horse_grade_url[n].attrs['href'])
         horses.append(horse)
@@ -83,18 +82,22 @@ def print_horse_status(horses):
 
 
 if __name__ == "__main__":
-    # テスト用url (2021年 日本ダービー)
+    # テスト用URL (2021年 日本ダービー)
     url = "https://race.netkeiba.com/race/shutuba.html?race_id=202105021211"
 
-    # urlを入力
+    # URLを入力
     url = input_race_url()
-    # urlから　を取得
+    # URLからHTMLを取得
     soup = get_soup(url)
 
+    # CUIに取得したHTNLを出力
     # print_all_html(soup)
-    # file_writer(soup, "html_prettify.txt")
+
+    # 整形したHTMLをtxtに出力
+    # file_writer(str(soup.prettify()), "html_prettify.txt")
 
     # 競走馬オブジェクトを生成
     horses = get_horse_status(soup)
+
     # 競走馬の情報を出力
-    print_horse_status(horses)
+    # print_horse_status(horses)
