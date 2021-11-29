@@ -9,8 +9,13 @@ import PathUtils
 
 # URLを入力
 def input_race_url():
-    print("\nレースのURLを入力してください。\n→ ", end="")
-    race_url = input()
+    while(True):
+        print("\nレースのURLを入力してください。\n→ ", end="")
+        race_url = input()
+        if race_url != "":
+            print("\n入力エラーです。")
+        else:
+            break
     return str(race_url)
 
 
