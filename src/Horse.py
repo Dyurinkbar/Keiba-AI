@@ -58,6 +58,20 @@ class Horse:
     def get_grade_url(self):
         return self.grade_url
 
+    # 生年月日
+    def set_birthday(self, birthday):
+        self.birthday = birthday
+
+    def get_birthday(self):
+        return self.birthday
+
+    # 血統
+    def set_Pedigree(self, edigree):
+        self.edigree = edigree
+
+    def get_edigree(self):
+        return self.edigree
+
     # 情報を出力
     def print_horse_status(self):
         print(self.waku + "枠 " + self.umaban +
