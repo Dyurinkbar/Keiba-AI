@@ -12,7 +12,7 @@ def input_race_url():
     while(True):
         print("\nレースのURLを入力してください。\n→ ", end="")
         race_url = input()
-        if race_url != "":
+        if race_url == "":
             print("\n入力エラーです。")
         else:
             break
@@ -105,4 +105,4 @@ if __name__ == "__main__":
     horses = get_horse_status(soup)
 
     # 競走馬の情報を出力
-    # print_horse_status(horses)
+    print_horse_status(horses)
