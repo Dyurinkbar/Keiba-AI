@@ -78,13 +78,13 @@ class RaceResult:
         return self.distance
 
     # 馬場状態
-    def set_race_situation(self, race_situation):
-        self.race_situation = race_situation
+    def set_race_condition(self, race_condition):
+        self.race_condition = race_condition
 
     def get_race_situation(self):
-        return self.race_situation
+        return self.race_condition
 
-    # 走破タイム
+    # タイム
     def set_time(self, time):
         self.time = time
 
@@ -118,6 +118,27 @@ class RaceResult:
 
     def get_body_weight(self):
         return self.body_weight
+
+    # レース成績を表示
+    def print_race_result_data(self):
+        print("\n日付：" + self.date)
+        print("開催場所：" + self.venue)
+        print("天気：" + self.weather)
+        print("レース名：" + self.race_name)
+        print("出馬頭数：" + self.horse_head_count)
+        print("枠：" + self.waku)
+        print("馬番：" + self.umaban)
+        print("着順：" + self.rank)
+        print("鞍上：" + self.jockey)
+        print("斤量：" + self.penalty_weight)
+        print("距離：" + self.distance)
+        print("馬場状態：" + self.race_condition)
+        print("タイム：" + self.time)
+        print("着差：" + self.reach_difference)
+        print("通過着順：" + self.passing_ranks)
+        print("上がりタイム：" + self.final_time)
+        print("馬体重：" + self.body_weight)
+        print("\n")
 
 
 '''
