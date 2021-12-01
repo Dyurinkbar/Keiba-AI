@@ -1,10 +1,10 @@
 '''競走馬のデータを取得'''
-import requests
 from bs4 import BeautifulSoup as bs
-import RaceResult
 import re
 
 import Horse
+import RaceResult
+import utils.SoupUtils as SoupUtils
 import utils.StringUtils as StringUtils
 
 
@@ -49,15 +49,12 @@ def get_horses_data_of_status(soup: bs):
 
 
 # 競走馬のレース情報を取得
-def get_horse_data_of_race_results(horse: Horse):
-    # 競走馬オブジェクトから成績URLを取得
-    grade_url = horse.get_grade_url()
+def get_horse_data_of_race_results(race_results_url: str):
     # URLからHTMLを取得
-    res = requests.get(grade_url)
-    soup = bs(res.content, "html.parser")
+    soup = SoupUtils.get_soup(race_results_url)
     # 競走成績表を取得
     grade_table = soup.find(class_=re.compile(
-        "db_")).select_one("tbody")
+        "db_h_race")).find("tbody").find_all("tr", limit=1)
 
     # 取得したデータをセット
     races = []
@@ -66,30 +63,58 @@ def get_horse_data_of_race_results(horse: Horse):
         # レースデータオブジェクトを生成
         race = RaceResult.RaceResult()
         # tdタグを順に読む
-        for n in range(len(grade_element)):
-            # race.set_date(grade_element[n].select("td")[0].text)
-            print(StringUtils.replace_not_blank(
-                grade_element[n].select("td")[0].text))
+        results_data = grade_element.select("td")
+        # 日付
+        race.set_date(StringUtils.replace_not_blank(
+            results_data[0].text))
+        # 開催場所
+        race.set_venue(StringUtils.replace_not_blank(
+            results_data[1].text))
+        # 天気
+        race.set_weather(StringUtils.replace_not_blank(
+            results_data[2].text))
+        # レース名
+        race.set_race_name(StringUtils.replace_not_blank(
+            results_data[4].text))
+        # 出馬頭数
+        race.set_horse_head_count(StringUtils.replace_not_blank(
+            results_data[6].text))
+        # 枠
+        race.set_waku(StringUtils.replace_not_blank(
+            results_data[7].text))
+        # 馬番
+        race.set_umaban(StringUtils.replace_not_blank(
+            results_data[8].text))
+        # 着順
+        race.set_rank(StringUtils.replace_not_blank(
+            results_data[11].text))
+        # 鞍上
+        race.set_jockey(StringUtils.replace_not_blank(
+            results_data[12].text))
+        # 斤量
+        race.set_penalty_weight(StringUtils.replace_not_blank(
+            results_data[13].text))
+        # 距離
+        race.set_race_distance(StringUtils.replace_not_blank(
+            results_data[14].text))
+        # 馬場状態
+        race.set_race_condition(StringUtils.replace_not_blank(
+            results_data[15].text))
+        # タイム
+        race.set_time(StringUtils.replace_not_blank(
+            results_data[17].text))
+        # 着差
+        race.set_reach_difference(StringUtils.replace_not_blank(
+            results_data[18].text))
+        # 通過着順
+        race.set_passing_ranks(StringUtils.replace_not_blank(
+            results_data[20].text))
+        # 上がりタイム
+        race.set_final_time(StringUtils.replace_not_blank(
+            results_data[22].text))
+        # 馬体重
+        race.set_body_weight(StringUtils.replace_not_blank(
+            results_data[23].text))
+        # リストに追加
         races.append(race)
     return races
-
-
-# レース情報を表示
-def print_race_data(race: RaceResult):
-    print("日付：" + race.get_date())
-    print("開催場所：" + race.get_venue())
-    print("天気：" + race.get_weather())
-    print("レース名：" + race.get_race_name())
-    print("出馬頭数：" + race.get_horse_head_count())
-    print("枠：" + race.get_waku())
-    print("馬番：" + race.get_umaban())
-    print("着順：" + race.get_rank())
-    print("鞍上：" + race.get_jockey())
-    print("斤量：" + race.get_penalty_weight())
-    print("距離：" + race.get_distance())
-    print("馬場状態：" + race.get_race_situation())
-    print("タイム：" + race.get_time())
-    print("着差：" + race.get_reach_difference())
-    print("通過着順：" + race.get_passing_ranks())
-    print("上がりタイム：" + race.get_final_time())
-    print("馬体重：" + race.get_body_weight())
