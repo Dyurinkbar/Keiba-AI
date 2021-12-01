@@ -72,8 +72,18 @@ class Horse:
     def get_edigree(self):
         return self.edigree
 
+    # 競走成績
+    def set_race_results(self, race_results):
+        self.race_results = race_results
+
+    def get_race_results(self):
+        return self.race_results
+
+    def add_race_results(self, race_result):
+        self.race_results.append(race_result)
+
     # 情報を出力
-    def print_horse_status(self):
+    def print_horse_data(self):
         print(self.waku + "枠 " + self.umaban +
               "番 " + self.name + " " + self.seirei + " 斤量" + self.penalty_weight + "kg " + self.trainer_place + " ")
         print(self.jockey + " 騎手" + "\n")

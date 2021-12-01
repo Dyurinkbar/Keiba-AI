@@ -1,5 +1,5 @@
 # レース情報のオブジェクトクラス
-class Race:
+class RaceResult:
     # 日付
     def set_date(self, date):
         self.date = date
@@ -28,7 +28,7 @@ class Race:
     def get_race_name(self):
         return self.race_name
 
-    # レース頭数
+    # 出馬頭数
     def set_horse_head_count(self, horse_head_count):
         self.horse_head_count = horse_head_count
 
