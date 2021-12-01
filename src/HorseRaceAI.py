@@ -4,8 +4,9 @@ from bs4 import BeautifulSoup as bs
 
 import Horse
 import HorseDataCollector
+import utils.SoupUtils as SoupUtils
 import utils.StringUtils as StringUtils
-import utils.PathUtils as PathUtils
+import utils.FileUtils as FileUtils
 
 
 # Main
@@ -17,26 +18,33 @@ def main():
     # url = input_race_url()
 
     # URLからHTMLを取得
-    soup = get_soup(url)
+    soup = SoupUtils.get_soup(url)
 
     # CUIに取得したHTNLを出力
-    # print_all_html(soup)
+    # SoupUtils.print_all_html(soup)
 
     # 整形したHTMLをtxtに出力
-    # file_writer(str(soup.prettify()), "html_prettify.txt")
+    # FileUtils.file_writer(str(soup.prettify()), "html_prettify.txt")
 
     # 競走馬オブジェクトを生成
+    print("\n競走馬オブジェクトを生成します。")
     horses = HorseDataCollector.get_horses_data_of_status(soup)
+    print("\n競走馬オブジェクトを生成しました。")
 
-    # 競走馬の情報を出力
-    # print_horse_data(horses)
+    # 競走馬の情報を表示
+    print_horse_data(horses)
 
     # 競走毎に成績データオブジェクトを生成
-    race = HorseDataCollector.get_horse_data_of_race_results(horses[0])
-    '''
+    print("\nレース成績オブジェクトを生成します。")
     for n in range(len(horses)):
-        HorseDataCollector.get_horse_data_by_race(horses[n])
-    '''
+        race_results = HorseDataCollector.get_horse_data_of_race_results(
+            horses[n].get_grade_url())
+        # 競走馬オブジェクトにレース成績をセット
+        horses[n].set_race_results(race_results)
+    print("\nレース成績オブジェクトを生成しました。")
+
+    # 競走馬のレース成績を表示
+    print_race_results(horses)
 
 
 # URLを入力
@@ -51,28 +59,21 @@ def input_race_url():
     return str(race_url)
 
 
-# URLからHTMLを取得
-def get_soup(url: str):
-    res = requests.get(url)
-    soup = bs(res.content, "html.parser")
-    return soup
-
-
-# タイトルを取得
-def get_title(soup: bs):
-    return soup.title.text
-
-
-# HTML全表示
-def print_all_html(soup: bs):
-    print(soup.prettify())
-
-
 # 競走馬の情報を出力
 def print_horse_data(horses: Horse):
     print("\n---競走馬の情報---\n")
     for horse in horses:
         horse.print_horse_data()
+
+
+# 競走馬のレース成績を表示
+def print_race_results(horses: Horse):
+    print("\n---レース戦績---\n")
+    for horse in horses:
+        print(horse.get_name())
+        race_results = horse.get_race_results()
+        for race_result in race_results:
+            race_result.print_race_result_data()
 
 
 if __name__ == "__main__":
