@@ -2,7 +2,7 @@
 import requests
 from bs4 import BeautifulSoup as bs
 
-import Horse
+import instance.Horse as Horse
 import HorseDataCollector
 import utils.SoupUtils as SoupUtils
 import utils.StringUtils as StringUtils
@@ -28,7 +28,7 @@ def main():
 
     # 競走馬オブジェクトを生成
     print("\n競走馬オブジェクトを生成します。")
-    horses = HorseDataCollector.get_horses_data_of_status(soup)
+    horses: Horse = HorseDataCollector.get_horses_data_of_status(soup)
     print("\n競走馬オブジェクトを生成しました。")
 
     # 競走馬の情報を表示

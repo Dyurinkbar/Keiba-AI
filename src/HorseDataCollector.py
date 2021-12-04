@@ -1,14 +1,20 @@
 '''競走馬のデータを取得'''
 from bs4 import BeautifulSoup as bs
 import re
+import chromedriver_binary
+from selenium import webdriver
+from selenium.webdriver.support.select import Select
+from time import sleep
 
-import Horse
-import RaceResult
+import instance.Horse as Horse
+import instance.RaceDetail as RaceDetail
+import instance.RaceResult as RaceResult
 import utils.SoupUtils as SoupUtils
 import utils.StringUtils as StringUtils
 
 
-# 競走馬全頭のデータを取得
+# 競走馬全頭のレース周りのデータを取得
+# 解析目標のレース情報の詳細も同時に取得
 def get_horses_data_of_status(soup: bs):
     '''データ取得'''
     # 競走馬のリストを取得
@@ -48,22 +54,22 @@ def get_horses_data_of_status(soup: bs):
     return horses
 
 
-# 競走馬のレース情報を取得
+# 競走馬のレース成績を取得
 def get_horse_data_of_race_results(race_results_url: str):
     # URLからHTMLを取得
     soup = SoupUtils.get_soup(race_results_url)
     # 競走成績表を取得
-    grade_table = soup.find(class_=re.compile(
+    race_results = soup.find(class_=re.compile(
         "db_h_race")).find("tbody").find_all("tr", limit=1)
 
     # 取得したデータをセット
     races = []
     # trタグ毎に読む
-    for grade_element in grade_table:
+    for race_result in race_results:
         # レースデータオブジェクトを生成
         race = RaceResult.RaceResult()
         # tdタグを順に読む
-        results_data = grade_element.select("td")
+        results_data = race_result.select("td")
         # 日付
         race.set_date(StringUtils.replace_not_blank(
             results_data[0].text))
@@ -118,3 +124,74 @@ def get_horse_data_of_race_results(race_results_url: str):
         # リストに追加
         races.append(race)
     return races
+
+
+# 上位のリーディングジョッキー取得(引数:上位の人数)
+def get_leading_jockey(jockey_count: int):
+    # データベースの騎手リーディングページのHTMLを取得
+    soup = SoupUtils.get_soup("https://db.netkeiba.com/?pid=jockey_leading")
+
+    # データの取得
+    jockey_names = soup.find_all(
+        href=re.compile("/jockey/"), limit=jockey_count)
+
+    # 上位リーディングジョッキーを格納する配列を宣言(昇順)
+    leading_jockeys = []
+    # 取得したジョッキーをリストに追加
+    [leading_jockeys.append(jockey_name) for jockey_name in jockey_names]
+
+    return leading_jockeys
+    # 東西の情報も入れたい(Dictionary<jockey,place>)
+
+
+# 過去のレースデータを取得(引数:レース名,年数)
+# ドロップボタンで年を選択→表示をクリック→レースのURL取得→の繰り返し
+def get_past_race_data(race_name: str, years: int):
+    print("Seleniumを使用します。")
+
+    # Webドライバーのオプションを設定(ウィンドウを開かなくする)
+    options = webdriver.ChromeOptions()
+    options.add_argument('--headless')
+
+    # Webドライバー生成
+    driver = webdriver.Chrome(options=options)
+
+    # 重賞日程ページURLからHTMLを取得
+    driver.get("https://race.netkeiba.com/top/schedule.html")
+
+    # 年を設定しているドロップボタンを取得
+    dropdown = driver.find_element_by_id("select-order")
+    # 「表示」ボタンを取得
+    button = driver.find_element_by_class_name("Submit_Btn btn")
+
+    # セレクトオブジェクト生成
+    select = Select(dropdown)
+
+    # 過去レースのリスト宣言
+    past_race_data = []
+
+    # 引数の年数分、過去のレースのURLを取得
+    for n in range(years):
+        # 一つ前の年を選択
+        select.select_by_index(len(select.options)(n - 1))
+        sleep(1)
+
+        # 「表示」ボタンをクリック
+        button.click()
+        sleep(1)
+
+        # レースURL部分を取得
+        race_names = driver.find_elements_by_xpath(
+            "//*[@id='Netkeiba_RaceTop']/div[1]/div/div[1]/div/div/div[2]/table/tbody/tr[2]/td[2]/a")
+
+        # レース名が一致したURLをリストの追加
+        for race_name in race_names.text:
+            if race_name == race_name:
+                # race_url = race_name.
+                # past_race_data.append(race_url)
+                break
+
+    # ドライバークローズ
+    driver.close()
+    return past_race_data
+    # レース名が一致しない可能性があるので、重賞日程ページと同じ表記にする必要がある
