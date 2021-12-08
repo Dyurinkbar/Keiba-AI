@@ -1,7 +1,28 @@
-'''レース情報のオブジェクトクラス'''
+'''レース成績のオブジェクトクラス'''
 
 
 class RaceResult:
+    def __init__(self):
+        self.date = "データなし"
+        self.venue = "データなし"
+        self.weather = "データなし"
+        self.race_name = "データなし"
+        self.race_url = "データなし"
+        self.horse_head_count = "データなし"
+        self.waku = "データなし"
+        self.umaban = "データなし"
+        self.rank = "データなし"
+        self.jockey = "データなし"
+        self.penalty_weight = "データなし"
+        self.distance = "データなし"
+        self.race_condition = "データなし"
+        self.time = "データなし"
+        self.reach_difference = "データなし"
+        self.passing_ranks = "データなし"
+        self.pace = "データなし"
+        self.final_time = "データなし"
+        self.body_weight = "データなし"
+
     # 日付
     def set_date(self, date):
         self.date = date
@@ -29,6 +50,13 @@ class RaceResult:
 
     def get_race_name(self):
         return self.race_name
+
+    # レース名
+    def set_race_url(self, race_url):
+        self.race_url = race_url
+
+    def get_race_url(self):
+        return self.race_url
 
     # 出馬頭数
     def set_horse_head_count(self, horse_head_count):
@@ -107,6 +135,13 @@ class RaceResult:
     def get_passing_ranks(self):
         return self.passing_ranks
 
+    # ペース
+    def set_pace(self, pace):
+        self.pace = pace
+
+    def get_pace(self):
+        return self.pace
+
     # 上がりタイム
     def set_final_time(self, final_time):
         self.final_time = final_time
@@ -127,6 +162,7 @@ class RaceResult:
         print("開催場所：" + self.venue)
         print("天気：" + self.weather)
         print("レース名：" + self.race_name)
+        print("レースURL：" + self.race_url)
         print("出馬頭数：" + self.horse_head_count)
         print("枠：" + self.waku)
         print("馬番：" + self.umaban)
@@ -138,6 +174,7 @@ class RaceResult:
         print("タイム：" + self.time)
         print("着差：" + self.reach_difference)
         print("通過着順：" + self.passing_ranks)
+        print("ペース：" + self.pace)
         print("上がりタイム：" + self.final_time)
         print("馬体重：" + self.body_weight)
         print("\n")

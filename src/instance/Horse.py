@@ -4,7 +4,20 @@ from instance.RaceDetail import RaceDetail
 
 
 class Horse:
-    # def __init__(self):
+    # コンストラクタ(空値が好ましくないので、空文字を代入)
+    def __init__(self):
+        self.name = "データなし"
+        self.jockey = "データなし"
+        self.waku = "データなし"
+        self.umaban = "データなし"
+        self.seirei = "データなし"
+        self.penalty_weight = "データなし"
+        self.trainer = "データなし"
+        self.race_results_url = "データなし"
+        self.trainer = "データなし"
+        self.owner = "データなし"
+        self.producer = "データなし"
+        self.birthday = "データなし"
 
     # 馬名
     def set_name(self, name):
@@ -49,18 +62,39 @@ class Horse:
         return self.penalty_weight
 
     # 厩舎場所
-    def set_trainer_place(self, trainer_place):
-        self.trainer_place = trainer_place
+    def set_trainer_area(self, trainer_area):
+        self.trainer_area = trainer_area
 
-    def get_trainer_place(self):
-        return self.trainer_place
+    def get_trainer_area(self):
+        return self.trainer_area
 
     # 競走成績URL
-    def set_grade_url(self, grade_url):
-        self.grade_url = grade_url
+    def set_race_results_url(self, race_results_url):
+        self.race_results_url = race_results_url
 
-    def get_grade_url(self):
-        return self.grade_url
+    def get_race_results_url(self):
+        return self.race_results_url
+
+    # 調教師
+    def set_trainer(self, trainer):
+        self.trainer = trainer
+
+    def get_trainer(self):
+        return self.trainer
+
+    # 馬主
+    def set_owner(self, owner):
+        self.owner = owner
+
+    def get_owner(self):
+        return self.owner
+
+    # 生産者
+    def set_producer(self, producer):
+        self.producer = producer
+
+    def get_producer(self):
+        return self.producer
 
     # 生年月日
     def set_birthday(self, birthday):
@@ -70,11 +104,11 @@ class Horse:
         return self.birthday
 
     # 血統
-    def set_Pedigree(self, edigree):
-        self.edigree = edigree
+    def set_edigrees(self, edigrees):
+        self.edigrees = edigrees
 
-    def get_edigree(self):
-        return self.edigree
+    def get_edigrees(self):
+        return self.edigrees
 
     # 競走成績オブジェクト
     def set_race_results(self, race_results: RaceResult):
@@ -86,15 +120,10 @@ class Horse:
     def add_race_results(self, race_result: RaceResult):
         self.race_results.append(race_result)
 
-    # レースオブジェクト
-    def set_race_detail(self, race_detail: RaceDetail):
-        self.race_detail = race_detail
-
-    def get_race_detail(self):
-        return self.race_detail
-
     # 情報を出力
     def print_horse_data(self):
         print(self.waku + "枠 " + self.umaban +
-              "番 " + self.name + " " + self.seirei + " 斤量" + self.penalty_weight + "kg " + self.trainer_place + " ")
-        print(self.jockey + " 騎手" + "\n")
+              "番 " + self.name + " " + self.seirei + " 斤量" + self.penalty_weight + "kg " + self.trainer_area + " ")
+        print(self.jockey + " 騎手")
+        print(self.birthday + " 生まれ")
+        print(self.trainer+" " + self.owner + " " + self.producer + "\n")

@@ -2,6 +2,19 @@
 
 
 class RaceDetail():
+    # コンストラクタ(空値が好ましくないので、空文字を代入)
+    def __init__(self):
+        self.race_name = "データなし"
+        self.race_url = "データなし"
+        self.distance_and_racetrack = "データなし"
+        self.around = "データなし"
+        self.weather = "データなし"
+        self.race_condition = "データなし"
+        self.venue = "データなし"
+        self.grade = "データなし"
+        self.penalty_weight_setting = "データなし"
+        self.horse_head_count = "データなし"
+
     # レース名
     def set_race_name(self, race_name):
         self.race_name = race_name
@@ -9,12 +22,26 @@ class RaceDetail():
     def get_race_name(self):
         return self.race_name
 
+    # レースURL
+    def set_race_url(self, race_url):
+        self.race_url = race_url
+
+    def get_race_url(self):
+        return self.race_url
+
     # 距離と馬場
     def set_distance_and_racetrack(self, distance_and_racetrack):
         self.distance_and_racetrack = distance_and_racetrack
 
     def get_distance_and_racetrack(self):
         return self.distance_and_racetrack
+
+    # 内外回り
+    def set_around(self, around):
+        self.around = around
+
+    def get_around(self):
+        return self.around
 
     # 天候
     def set_weather(self, weather):
@@ -57,11 +84,3 @@ class RaceDetail():
 
     def get_horse_head_count(self):
         return self.horse_head_count
-
-
-'''
-	def set_(self,):
-		self.  =
-	def get_(self):
-		return self.
-'''
