@@ -11,6 +11,7 @@ class RaceDetail():
         self.weather = "データなし"
         self.race_condition = "データなし"
         self.venue = "データなし"
+        self.entry_terms = "データなし"
         self.grade = "データなし"
         self.penalty_weight_setting = "データなし"
         self.horse_head_count = "データなし"
@@ -64,6 +65,13 @@ class RaceDetail():
     def get_venue(self):
         return self.venue
 
+    # 出馬条件
+    def set_entry_terms(self, entry_terms):
+        self.entry_terms = entry_terms
+
+    def get_entry_terms(self):
+        return self.entry_terms
+
     # クラス
     def set_grade(self, grade):
         self.grade = grade
@@ -84,3 +92,18 @@ class RaceDetail():
 
     def get_horse_head_count(self):
         return self.horse_head_count
+
+    # レース情報を表示
+    def print_race_detail(self):
+        print(f"レース名：{self.race_name}")
+        print(f"レースURL：{self.race_url}")
+        print(f"距離と馬場：{self.distance_and_racetrack}")
+        print(f"内外回り：{self.around}")
+        print(f"天候：{self.weather}")
+        print(f"馬場状態：{self.race_condition}")
+        print(f"開催場所：{self.venue}")
+        print(f"出馬条件：{self.entry_terms}")
+        print(f"クラス：{self.grade}")
+        print(f"斤量設定：{self.penalty_weight_setting}")
+        print(f"出馬頭数：{self.horse_head_count}")
+        print()
