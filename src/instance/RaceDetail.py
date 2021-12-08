@@ -106,4 +106,4 @@ class RaceDetail():
         print(f"クラス：{self.grade}")
         print(f"斤量設定：{self.penalty_weight_setting}")
         print(f"出馬頭数：{self.horse_head_count}")
-        print()
+        print("\n")

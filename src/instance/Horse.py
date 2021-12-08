@@ -16,7 +16,7 @@ class Horse:
         self.race_results_url = "データなし"
         self.trainer = "データなし"
         self.owner = "データなし"
-        self.producer = "データなし"
+        self.breeder = "データなし"
         self.birthday = "データなし"
 
     # 馬名
@@ -90,11 +90,11 @@ class Horse:
         return self.owner
 
     # 生産者
-    def set_producer(self, producer):
-        self.producer = producer
+    def set_breeder(self, breeder):
+        self.breeder = breeder
 
-    def get_producer(self):
-        return self.producer
+    def get_breeder(self):
+        return self.breeder
 
     # 生年月日
     def set_birthday(self, birthday):
@@ -126,4 +126,13 @@ class Horse:
               "番 " + self.name + " " + self.seirei + " 斤量" + self.penalty_weight + "kg " + self.trainer_area + " ")
         print(self.jockey + " 騎手")
         print(self.birthday + " 生まれ")
-        print(self.trainer+" " + self.owner + " " + self.producer + "\n")
+        print("調教師：" + self.trainer)
+        print("馬主　：" + self.owner)
+        print("生産者：" + self.breeder)
+        print("母　：" + self.edigrees["母"])
+        print("父　：" + self.edigrees["父"])
+        print("父母：" + self.edigrees["父母"])
+        print("父父：" + self.edigrees["父父"])
+        print("母父：" + self.edigrees["母父"])
+        print("母母：" + self.edigrees["母母"])
+        print("\n")
