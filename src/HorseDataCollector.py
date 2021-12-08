@@ -1,7 +1,9 @@
 '''競走馬のデータを取得'''
 from bs4 import BeautifulSoup as bs
 import re
+from bs4.element import ResultSet
 import chromedriver_binary
+from requests.sessions import dispatch_hook
 from selenium import webdriver
 from selenium.webdriver.support.select import Select
 from time import sleep
@@ -14,8 +16,11 @@ import utils.StringUtils as StringUtils
 
 
 # 競走馬全頭のレース周りのデータを取得
-# 解析目標のレース情報の詳細も同時に取得
-def get_horses_data_of_status(soup: bs):
+def get_horses_data_of_status_by_main_race(main_race_url: str):
+    print("\n出走馬のデータを出馬表から取得します。")
+    # HTNL取得
+    soup = SoupUtils.get_soup(main_race_url)
+
     '''データ取得'''
     # 競走馬のリストを取得
     horse_list = soup.select("tr.HorseList")
@@ -35,7 +40,7 @@ def get_horses_data_of_status(soup: bs):
     # 鞍上
     jockey_name = soup.select("td[class^=Jockey]")
     # 競走成績URL
-    horse_grade_url = soup.select("span[class^=HorseName] a")
+    race_results_url = soup.select("span[class^=HorseName] a")
 
     horses = []
     for n in range(len(horse_list)):
@@ -48,16 +53,134 @@ def get_horses_data_of_status(soup: bs):
         horse.set_seirei(horse_seirei[n].text)
         horse.set_penalty_weight(horse_penalty_weight[n].text)
         horse.set_jockey(StringUtils.replace_not_blank(jockey_name[n].text))
-        horse.set_trainer_place(horse_trainer_place[n].text)
-        horse.set_grade_url(horse_grade_url[n].attrs['href'])
+        horse.set_trainer_area(horse_trainer_place[n].text)
+        horse.set_race_results_url(race_results_url[n].attrs['href'])
         horses.append(horse)
+
+    print("取得しました。\n")
     return horses
+
+
+# 競走馬のDBから取得できるデータを抽出
+def get_horses_data_of_status_by_database(horses: Horse):
+    print("\n出走馬のデータをデータベースから取得します。")
+
+    for horse in horses:
+        print(f"{StringUtils.replace_not_blank(horse.get_name())} から取得")
+        # 競走馬オブジェクトから、レース成績URLを取得
+        race_results_url = horse.get_race_results_url()
+        # URLからHTMLを取得
+        soup = SoupUtils.get_soup(race_results_url)
+
+        # プロフィール部分取得
+        profile = soup.find(class_=re.compile(
+            "db_prof_area_02")).find("table")
+
+        # 生年月日
+        horse.set_birthday(profile.find_all("td")[0].text)
+        # 調教師
+        horse.set_trainer(profile.find("a", href=re.compile("/owner/")).text)
+        # 馬主
+        horse.set_owner(profile.find("a", href=re.compile("/owner/")).text)
+        # 生産者
+        horse.set_breeder(profile.find(
+            "a", href=re.compile("/breeder/")).text)
+
+        # 血統部分取得
+        edigrees = soup.find(class_="blood_table").find_all("a")
+        # 血統
+        edigree_dict = {
+            "父": edigrees[0].text, "母": edigrees[1].text, "父父": edigrees[2].text, "父母": edigrees[3].text, "母父": edigrees[4].text, "母母": edigrees[5].text
+        }
+        horse.set_edigrees(edigree_dict)
+    print("取得しました。\n")
+    return horses
+
+
+# レースの情報を出馬表から取得
+def get_race_data_of_main_race(main_race_url: str):
+    print("\nレースの情報を出馬表から取得します。")
+    # HTNL取得
+    soup = SoupUtils.get_soup(main_race_url)
+
+    # レースオブジェクト生成
+    race_detail = RaceDetail.RaceDetail()
+
+    # レース名取得
+    race_detail.set_race_name(StringUtils.replace_not_blank(
+        soup.select_one("div.RaceName").text))
+
+    # レースURLをセット
+    race_detail.set_race_url(main_race_url)
+
+    # 1行目の箇所取得
+    data_line1 = soup.find("div", class_="RaceData01")
+
+    # 距離(起点)の箇所を取得
+    distance_part = data_line1.find("span")
+    # 距離と馬場
+    race_detail.set_distance_and_racetrack(
+        StringUtils.replace_not_blank(distance_part.text))
+
+    # 内外回りと天候の箇所を取得
+    around_part = distance_part.next_sibling
+
+    around = ""
+    # 天候は解析日によって表示されていない可能性があるので、チェック
+    try:
+        # 内外回りと天候をスラッシュで分割
+        strs = around_part.split("/")
+        around = strs[0]
+        weather = strs[1]
+        # 天候
+        race_detail.set_weather(weather.split(":")[1])
+    except:
+        print("天候は存在しないか取得できません。")
+        # 内外回りは存在するので、取得
+        around = around_part
+
+    # 内外回り
+    race_detail.set_around(StringUtils.replace_not_parentheses(around))
+
+    # 馬場状態の箇所を取得
+    race_condition = data_line1.select("span[class^=Item04]")
+    # 解析日によって表示されていない可能性があるので、チェック
+    try:
+        # 馬場状態
+        race_detail.set_race_condition(race_condition[0].text.split("馬場:")[1])
+    except:
+        print("馬場状態は存在しないか取得できません。")
+
+    # 2行目の箇所取得
+    data_line2 = soup.find("div", class_="RaceData02").find_all("span")
+
+    # tagがないので、順に取得
+    # 開催場所
+    race_detail.set_venue(data_line2[1].text)
+    # 出馬条件
+    race_detail.set_entry_terms(data_line2[3].text)
+    # クラス
+    race_detail.set_grade(data_line2[4].text)
+    # 斤量設定
+    race_detail.set_penalty_weight_setting(data_line2[6].text)
+    # 出馬頭数
+    race_detail.set_horse_head_count(data_line2[7].text)
+
+    print("取得しました。\n")
+    return race_detail
 
 
 # 競走馬のレース成績を取得
 def get_horse_data_of_race_results(race_results_url: str):
+    print("\n出走馬の競走成績を取得します。")
+
     # URLからHTMLを取得
     soup = SoupUtils.get_soup(race_results_url)
+
+    # 馬の名前を取得し、表示
+    horse_name = soup.select_one("div[class ^= horse_title] > h1").text
+    print(f"{StringUtils.replace_not_blank(horse_name)} から取得。")
+
     # 競走成績表を取得
     race_results = soup.find(class_=re.compile(
         "db_h_race")).find("tbody").find_all("tr", limit=1)
@@ -69,7 +192,7 @@ def get_horse_data_of_race_results(race_results_url: str):
         # レースデータオブジェクトを生成
         race = RaceResult.RaceResult()
         # tdタグを順に読む
-        results_data = race_result.select("td")
+        results_data = race_result.find_all("td")
         # 日付
         race.set_date(StringUtils.replace_not_blank(
             results_data[0].text))
@@ -82,6 +205,9 @@ def get_horse_data_of_race_results(race_results_url: str):
         # レース名
         race.set_race_name(StringUtils.replace_not_blank(
             results_data[4].text))
+        # レースURL
+        race.set_race_url("https://db.netkeiba.com" +
+                          results_data[4].find().attrs['href'])
         # 出馬頭数
         race.set_horse_head_count(StringUtils.replace_not_blank(
             results_data[6].text))
@@ -115,6 +241,9 @@ def get_horse_data_of_race_results(race_results_url: str):
         # 通過着順
         race.set_passing_ranks(StringUtils.replace_not_blank(
             results_data[20].text))
+        # ペース
+        race.set_pace(StringUtils.replace_not_blank(
+            results_data[21].text))
         # 上がりタイム
         race.set_final_time(StringUtils.replace_not_blank(
             results_data[22].text))
@@ -123,11 +252,15 @@ def get_horse_data_of_race_results(race_results_url: str):
             results_data[23].text))
         # リストに追加
         races.append(race)
+
+    print("取得しました。\n")
     return races
 
 
 # 上位のリーディングジョッキー取得(引数:上位の人数)
 def get_leading_jockey(jockey_count: int):
+    print(f"\nリーディングジョッキー上位{jockey_count}名を取得します。")
+
     # データベースの騎手リーディングページのHTMLを取得
     soup = SoupUtils.get_soup("https://db.netkeiba.com/?pid=jockey_leading")
 
@@ -140,14 +273,55 @@ def get_leading_jockey(jockey_count: int):
     # 取得したジョッキーをリストに追加
     [leading_jockeys.append(jockey_name) for jockey_name in jockey_names]
 
+    print("取得しました。\n")
     return leading_jockeys
     # 東西の情報も入れたい(Dictionary<jockey,place>)
 
 
-# 過去のレースデータを取得(引数:レース名,年数)
-# ドロップボタンで年を選択→表示をクリック→レースのURL取得→の繰り返し
-def get_past_race_data(race_name: str, years: int):
+# 過去のレースURLを取得(5年分だと思う)
+# 出馬表の「データ分析」の下部の過去5年分のデータを取得
+def get_past_race_url_by_data_analyze_page(main_race_url: str):
+    print("\n過去レースのデータをデータ分析ページから取得します。")
+    print("データ分析ページから過去データのURLを取得します。")
+
+    # 過去レースのリスト宣言
+    past_race_urls = []
+
+    # 出馬表のURLを一部置き換えて、データ分析ページのURLを取得
+    temp = main_race_url.split("shutuba")
+    data_analyze_page_url = temp[0] + "data_top" + temp[1]
+    # データ分析ページのHTMLを取得する
+    soup = SoupUtils.get_soup(data_analyze_page_url)
+
+    # 過去の成績の表部分を取得
+    #past_race_part = soup.find("table",id="PastResultTable").find_all("tr")
+    past_race_part = soup.find("div", class_="Table_Container")
+    print(past_race_part)
+
+    # レースのURL部分を取得
+    past_race_url_parts = past_race_part.find_all(
+        href=re.compile("https://db.netkeiba.com/race/"))
+    print(past_race_url_parts)
+
+    past_race_urls = past_race_url_parts.attrs['href']
+
+    # データが取得できていたら、そのURLリストを返却
+    # そうでなければ、重賞一覧からの取得に移る
+    if past_race_urls[0] != "":
+        return past_race_urls
+    else:
+        print("データ分析ページの過去データが見つかりませんでした。")
+        return ""
+
+
+# 過去のレースURLを取得(引数:レース名,年数)
+# 「重賞日程」からドロップボタンで年を選択→表示をクリック→レースのURL取得→の繰り返し
+def get_past_race_url_by_grade_race_schedule_page(race_name: str, years: int):
+    print(f"\n過去レースのデータを重賞日程ページから {years} 年分取得します。")
+    print("データ分析ページから過去データのURLを取得します。")
     print("Seleniumを使用します。")
+
+    # レース名を重賞日程の名前と一致させる
 
     # Webドライバーのオプションを設定(ウィンドウを開かなくする)
     options = webdriver.ChromeOptions()
@@ -159,6 +333,8 @@ def get_past_race_data(race_name: str, years: int):
     # 重賞日程ページURLからHTMLを取得
     driver.get("https://race.netkeiba.com/top/schedule.html")
 
+    past_race_urls = []
+
     # 年を設定しているドロップボタンを取得
     dropdown = driver.find_element_by_id("select-order")
     # 「表示」ボタンを取得
@@ -166,9 +342,6 @@ def get_past_race_data(race_name: str, years: int):
 
     # セレクトオブジェクト生成
     select = Select(dropdown)
-
-    # 過去レースのリスト宣言
-    past_race_data = []
 
     # 引数の年数分、過去のレースのURLを取得
     for n in range(years):
@@ -188,10 +361,11 @@ def get_past_race_data(race_name: str, years: int):
         for race_name in race_names.text:
             if race_name == race_name:
                 # race_url = race_name.
-                # past_race_data.append(race_url)
+                # past_race_urls.append(race_url)
                 break
 
     # ドライバークローズ
     driver.close()
-    return past_race_data
+    print("取得しました。\n")
+    return past_race_urls
     # レース名が一致しない可能性があるので、重賞日程ページと同じ表記にする必要がある
