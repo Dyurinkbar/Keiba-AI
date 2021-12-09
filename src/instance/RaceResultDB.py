@@ -96,6 +96,13 @@ class RaceResultDB:
     def get_passing_ranks(self):
         return self.passing_ranks
 
+    # オッズ
+    def set_odds(self, odds):
+        self.odds = odds
+
+    def get_odds(self):
+        return self.odds
+
     # 人気
     def set_favorite(self, favorite):
         self.favorite = favorite
@@ -144,6 +151,7 @@ class RaceResultDB:
         print("タイム：" + self.time)
         print("着差：" + self.reach_difference)
         print("通過着順：" + self.passing_ranks)
+        print("人気" + self.odds)
         print("人気" + self.favorite)
         print("上がりタイム：" + self.final_rap_time)
         print("馬体重：" + self.body_weight)
