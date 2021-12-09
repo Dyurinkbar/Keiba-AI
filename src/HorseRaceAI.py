@@ -4,6 +4,8 @@ from bs4 import BeautifulSoup as bs
 
 import instance.Horse as Horse
 import HorseDataCollector
+from instance.RaceDetail import RaceDetail
+from instance.RaceResultDB import RaceResultDB
 import utils.SoupUtils as SoupUtils
 import utils.StringUtils as StringUtils
 import utils.FileUtils as FileUtils
@@ -12,39 +14,64 @@ import utils.FileUtils as FileUtils
 # Main
 def main():
     # テスト用URL (2021年 日本ダービー)
-    url = "https://race.netkeiba.com/race/shutuba.html?race_id=202105021211"
+    main_race_url = "https://race.netkeiba.com/race/shutuba.html?race_id=202105021211"
 
     # URLを入力
-    # url = input_race_url()
+    # main_race_url = input_race_url()
 
-    # URLからHTMLを取得
-    soup = SoupUtils.get_soup(url)
-
-    # CUIに取得したHTNLを出力
+    # 取得したHTNLを表示
     # SoupUtils.print_all_html(soup)
 
     # 整形したHTMLをtxtに出力
     # FileUtils.file_writer(str(soup.prettify()), "html_prettify.txt")
-
+    '''
     # 競走馬オブジェクトを生成
-    print("\n競走馬オブジェクトを生成します。")
-    horses: Horse = HorseDataCollector.get_horses_data_of_status(soup)
-    print("\n競走馬オブジェクトを生成しました。")
+    horses: Horse = HorseDataCollector.get_horses_data_of_status_by_main_race(
+        main_race_url)
 
-    # 競走馬の情報を表示
-    print_horse_data(horses)
+    # レース情報を出馬表から取得
+    race_detail: RaceDetail = HorseDataCollector.get_race_data_of_main_race(
+        main_race_url)
+
+    # 競走馬DBからデータを取得
+    horses = HorseDataCollector.get_horses_data_of_status_by_database(horses)
 
     # 競走毎に成績データオブジェクトを生成
-    print("\nレース成績オブジェクトを生成します。")
     for n in range(len(horses)):
         race_results = HorseDataCollector.get_horse_data_of_race_results(
-            horses[n].get_grade_url())
+            horses[n].get_race_results_url())
         # 競走馬オブジェクトにレース成績をセット
         horses[n].set_race_results(race_results)
-    print("\nレース成績オブジェクトを生成しました。")
+    '''
+
+    '''
+    # 過去レースのURLを取得
+    # 「データ分析」ページから取得を試みる
+    # 失敗したら、DBの「重賞日程」ページから取得
+    past_race_urls = HorseDataCollector.get_past_race_url_by_data_analyze_page(
+        main_race_url)
+    
+    if past_race_urls == "":
+        past_race_urls = HorseDataCollector.get_past_race_url_by_grade_race_schedule_page(
+            race_detail.get_race_name(), 5)
+    print(past_race_urls)
+    '''
+
+    # レースDBから、レース情報を取得
+    race_detail, race_results_db = HorseDataCollector.get_race_results_by_database(
+        "https://db.netkeiba.com/race/202109050211/")
+
+    # 競走馬の情報を表示
+    # print_horse_data(horses)
+
+    # レースの情報を表示
+    print_race_detail(race_detail)
 
     # 競走馬のレース成績を表示
-    print_race_results(horses)
+    # print_race_results(horses)
+
+    # レースDBの情報を表示
+    # print_race_results_db(race_results_db)
 
 
 # URLを入力
@@ -66,14 +93,27 @@ def print_horse_data(horses: Horse):
         horse.print_horse_data()
 
 
+# 競走馬の情報を出力
+def print_race_detail(race_detail: RaceDetail):
+    print("\n---レースの情報---\n")
+    race_detail.print_race_detail()
+
+
 # 競走馬のレース成績を表示
 def print_race_results(horses: Horse):
-    print("\n---レース戦績---\n")
+    print("\n---レースの戦績---\n")
     for horse in horses:
         print(horse.get_name())
         race_results = horse.get_race_results()
         for race_result in race_results:
             race_result.print_race_result_data()
+
+
+# レースのDBの情報を表示
+def print_race_results_db(RaceDetail, race_results_db: RaceResultDB):
+    print("\n---レースDBの情報---\n")
+    for race_result_db in race_results_db:
+        race_result_db.print_race_result_data()
 
 
 if __name__ == "__main__":
