@@ -6,18 +6,18 @@ from instance.RaceDetail import RaceDetail
 class Horse:
     # コンストラクタ(空値が好ましくないので、空文字を代入)
     def __init__(self):
-        self.name = "データなし"
-        self.jockey = "データなし"
-        self.waku = "データなし"
-        self.umaban = "データなし"
-        self.seirei = "データなし"
-        self.penalty_weight = "データなし"
-        self.trainer = "データなし"
-        self.race_results_url = "データなし"
-        self.trainer = "データなし"
-        self.owner = "データなし"
-        self.breeder = "データなし"
-        self.birthday = "データなし"
+        self.name = "?"
+        self.jockey = "?"
+        self.waku = "?"
+        self.umaban = "?"
+        self.seirei = "?"
+        self.penalty_weight = "?"
+        self.trainer = "?"
+        self.race_results_url = "?"
+        self.trainer = "?"
+        self.owner = "?"
+        self.breeder = "?"
+        self.birthday = "?"
 
     # 馬名
     def set_name(self, name):
@@ -61,7 +61,7 @@ class Horse:
     def get_penalty_weight(self):
         return self.penalty_weight
 
-    # 厩舎場所
+    # 厩舎地方
     def set_trainer_area(self, trainer_area):
         self.trainer_area = trainer_area
 

@@ -4,17 +4,17 @@
 class RaceDetail():
     # コンストラクタ(空値が好ましくないので、空文字を代入)
     def __init__(self):
-        self.race_name = "データなし"
-        self.race_url = "データなし"
-        self.distance_and_racetrack = "データなし"
-        self.around = "データなし"
-        self.weather = "データなし"
-        self.race_condition = "データなし"
-        self.venue = "データなし"
-        self.entry_terms = "データなし"
-        self.grade = "データなし"
-        self.penalty_weight_setting = "データなし"
-        self.horse_head_count = "データなし"
+        self.race_name = "?"
+        self.race_url = "?"
+        self.distance_and_racetrack = "?"
+        self.around = "?"
+        self.weather = "?"
+        self.race_condition = "?"
+        self.venue = "?"
+        self.entry_terms = "?"
+        self.grade = "?"
+        self.penalty_weight_setting = "?"
+        self.horse_head_count = "?"
 
     # レース名
     def set_race_name(self, race_name):

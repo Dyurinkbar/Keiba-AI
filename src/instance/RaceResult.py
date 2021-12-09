@@ -3,25 +3,25 @@
 
 class RaceResult:
     def __init__(self):
-        self.date = "データなし"
-        self.venue = "データなし"
-        self.weather = "データなし"
-        self.race_name = "データなし"
-        self.race_url = "データなし"
-        self.horse_head_count = "データなし"
-        self.waku = "データなし"
-        self.umaban = "データなし"
-        self.rank = "データなし"
-        self.jockey = "データなし"
-        self.penalty_weight = "データなし"
-        self.distance = "データなし"
-        self.race_condition = "データなし"
-        self.time = "データなし"
-        self.reach_difference = "データなし"
-        self.passing_ranks = "データなし"
-        self.pace = "データなし"
-        self.final_time = "データなし"
-        self.body_weight = "データなし"
+        self.date = "?"
+        self.venue = "?"
+        self.weather = "?"
+        self.race_name = "?"
+        self.race_url = "?"
+        self.horse_head_count = "?"
+        self.waku = "?"
+        self.umaban = "?"
+        self.rank = "?"
+        self.jockey = "?"
+        self.penalty_weight = "?"
+        self.distance = "?"
+        self.race_condition = "?"
+        self.time = "?"
+        self.reach_difference = "?"
+        self.passing_ranks = "?"
+        self.pace = "?"
+        self.final_time = "?"
+        self.body_weight = "?"
 
     # 日付
     def set_date(self, date):
@@ -143,11 +143,11 @@ class RaceResult:
         return self.pace
 
     # 上がりタイム
-    def set_final_time(self, final_time):
-        self.final_time = final_time
+    def set_final_rap_time(self, final_rap_time):
+        self.final_rap_time = final_rap_time
 
-    def get_final_time(self):
-        return self.final_time
+    def get_final_rap_time(self):
+        return self.final_rap_time
 
     # 馬体重
     def set_body_weight(self, body_weight):
