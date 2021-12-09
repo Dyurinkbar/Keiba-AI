@@ -19,13 +19,6 @@ class RaceResultDB:
         self.trainer_area = "?"
         self.owner = "?"
 
-    # レース情報オブジェクト
-    def set_race_detail(self, race_detail: RaceDetail):
-        self.race_detail = race_detail
-
-    def get_race_detail(self):
-        return self.race_detail
-
     # 着順
     def set_rank(self, rank):
         self.rank = rank
@@ -53,6 +46,13 @@ class RaceResultDB:
 
     def get_horse_name(self):
         return self.horse_name
+
+    # 競走成績URL
+    def set_race_results_url(self, race_results_url):
+        self.race_results_url = race_results_url
+
+    def get_race_results_url(self):
+        return self.race_results_url
 
     # 性齢
     def set_seirei(self, seirei):
@@ -141,20 +141,21 @@ class RaceResultDB:
     # レース成績を表示
 
     def print_race_result_data(self):
-        print("\n日付：" + self.date)
-        print("枠：" + self.waku)
-        print("馬番：" + self.umaban)
-        print("馬名：" + self.horse_name)
-        print("性齢：" + self.seirei)
-        print("斤量：" + self.penalty_weight)
-        print("鞍上：" + self.jockey)
-        print("タイム：" + self.time)
-        print("着差：" + self.reach_difference)
+        print("着順　　：" + self.rank)
+        print("枠　　　：" + self.waku)
+        print("馬番　　：" + self.umaban)
+        print("馬名　　：" + self.horse_name)
+        print("競走成績URL：" + self.race_results_url)
+        print("性齢　　：" + self.seirei)
+        print("斤量　　：" + self.penalty_weight)
+        print("鞍上　　：" + self.jockey)
+        print("タイム　：" + self.time)
+        print("着差　　：" + self.reach_difference)
         print("通過着順：" + self.passing_ranks)
-        print("人気" + self.odds)
-        print("人気" + self.favorite)
-        print("上がりタイム：" + self.final_rap_time)
-        print("馬体重：" + self.body_weight)
+        print("オッズ　：" + self.odds)
+        print("人気　　：" + self.favorite)
+        print("上がり　：" + self.final_rap_time)
+        print("馬体重　：" + self.body_weight)
         print("厩舎地方：" + self.trainer_area)
-        print("馬主：" + self.owner)
+        print("馬主　　：" + self.owner)
         print("\n")
