@@ -175,7 +175,7 @@ class RaceResult:
         print("着差　　：" + self.reach_difference)
         print("通過着順：" + self.passing_ranks)
         print("ペース　：" + self.pace)
-        print("上がり　：" + self.final_time)
+        print("上がり　：" + self.final_rap_time)
         print("馬体重　：" + self.body_weight)
         print("\n")
 

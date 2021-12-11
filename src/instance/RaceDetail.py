@@ -11,6 +11,7 @@ class RaceDetail():
         self.weather = "?"
         self.race_condition = "?"
         self.venue = "?"
+        self.date = "?"
         self.entry_terms = "?"
         self.grade = "?"
         self.penalty_weight_setting = "?"
