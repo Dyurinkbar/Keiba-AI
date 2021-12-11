@@ -9,6 +9,7 @@ from instance.RaceResultDB import RaceResultDB
 import utils.SoupUtils as SoupUtils
 import utils.StringUtils as StringUtils
 import utils.FileUtils as FileUtils
+import HorseDataPrinter
 
 
 # Main
@@ -24,7 +25,7 @@ def main():
 
     # 整形したHTMLをtxtに出力
     # FileUtils.file_writer(str(soup.prettify()), "html_prettify.txt")
-    '''
+    # '''
     # 競走馬オブジェクトを生成
     horses: Horse = HorseDataCollector.get_horses_data_of_status_by_main_race(
         main_race_url)
@@ -42,7 +43,7 @@ def main():
             horses[n].get_race_results_url())
         # 競走馬オブジェクトにレース成績をセット
         horses[n].set_race_results(race_results)
-    '''
+    # '''
 
     '''
     # 過去レースのURLを取得
@@ -58,20 +59,21 @@ def main():
     '''
 
     # レースDBから、レース情報を取得
+    '''
     race_detail, race_results_db = HorseDataCollector.get_race_results_by_database(
-        "https://db.netkeiba.com/race/202109050211/")
+        "https://db.netkeiba.com/race/202109050211/")'''
 
     # 競走馬の情報を表示
-    # print_horse_data(horses)
+    HorseDataPrinter.print_horse_data(horses)
 
     # レースの情報を表示
-    print_race_detail(race_detail)
+    HorseDataPrinter.print_race_detail(race_detail)
 
     # 競走馬のレース成績を表示
-    # print_race_results(horses)
+    HorseDataPrinter.print_race_results(horses)
 
     # レースDBの情報を表示
-    # print_race_results_db(race_results_db)
+    # HorseDataPrinter.print_race_results_db(race_results_db)
 
 
 # URLを入力
@@ -84,36 +86,6 @@ def input_race_url():
         else:
             print("\n入力エラーです。")
     return str(race_url)
-
-
-# 競走馬の情報を出力
-def print_horse_data(horses: Horse):
-    print("\n---競走馬の情報---\n")
-    for horse in horses:
-        horse.print_horse_data()
-
-
-# 競走馬の情報を出力
-def print_race_detail(race_detail: RaceDetail):
-    print("\n---レースの情報---\n")
-    race_detail.print_race_detail()
-
-
-# 競走馬のレース成績を表示
-def print_race_results(horses: Horse):
-    print("\n---レースの戦績---\n")
-    for horse in horses:
-        print(horse.get_name())
-        race_results = horse.get_race_results()
-        for race_result in race_results:
-            race_result.print_race_result_data()
-
-
-# レースのDBの情報を表示
-def print_race_results_db(RaceDetail, race_results_db: RaceResultDB):
-    print("\n---レースDBの情報---\n")
-    for race_result_db in race_results_db:
-        race_result_db.print_race_result_data()
 
 
 if __name__ == "__main__":

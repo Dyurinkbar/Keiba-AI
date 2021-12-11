@@ -61,40 +61,46 @@ def get_horses_data_of_status_by_main_race(main_race_url: str):
     return horses
 
 
-# 競走馬のDBから取得できるデータを抽出
+# 競走馬のDBから取得できるデータを抽出(リスト)
 def get_horses_data_of_status_by_database(horses: Horse):
+    for horse in horses:
+        horse = get_horse_data_of_status_by_database(horse)
+    return horses
+
+
+# 競走馬のDBから取得できるデータを抽出
+def get_horse_data_of_status_by_database(horse: Horse):
     print("\n出走馬のデータをデータベースから取得します。")
 
-    for horse in horses:
-        print(f"{StringUtils.replace_shave_blank(horse.get_name())} から取得")
-        # 競走馬オブジェクトから、レース成績URLを取得
-        race_results_url = horse.get_race_results_url()
-        # URLからHTMLを取得
-        soup = SoupUtils.get_soup(race_results_url)
+    print(f"{StringUtils.replace_shave_blank(horse.get_name())} から取得")
+    # 競走馬オブジェクトから、レース成績URLを取得
+    race_results_url = horse.get_race_results_url()
+    # URLからHTMLを取得
+    soup = SoupUtils.get_soup(race_results_url)
 
-        # プロフィール部分取得
-        profile = soup.find(class_=re.compile(
-            "db_prof_area_02")).find("table")
+    # プロフィール部分取得
+    profile = soup.find(class_=re.compile(
+        "db_prof_area_02")).find("table")
 
-        # 生年月日
-        horse.set_birthday(profile.find_all("td")[0].text)
-        # 調教師
-        horse.set_trainer(profile.find("a", href=re.compile("/owner/")).text)
-        # 馬主
-        horse.set_owner(profile.find("a", href=re.compile("/owner/")).text)
-        # 生産者
-        horse.set_breeder(profile.find(
-            "a", href=re.compile("/breeder/")).text)
+    # 生年月日
+    horse.set_birthday(profile.find_all("td")[0].text)
+    # 調教師
+    horse.set_trainer(profile.find("a", href=re.compile("/owner/")).text)
+    # 馬主
+    horse.set_owner(profile.find("a", href=re.compile("/owner/")).text)
+    # 生産者
+    horse.set_breeder(profile.find(
+        "a", href=re.compile("/breeder/")).text)
 
-        # 血統部分取得
-        edigrees = soup.find(class_="blood_table").find_all("a")
-        # 血統
-        edigree_dict = {
-            "父": edigrees[0].text, "母": edigrees[1].text, "父父": edigrees[2].text, "父母": edigrees[3].text, "母父": edigrees[4].text, "母母": edigrees[5].text
-        }
-        horse.set_edigrees(edigree_dict)
+    # 血統部分取得
+    edigrees = soup.find(class_="blood_table").find_all("a")
+    # 血統
+    edigree_dict = {
+        "父": edigrees[0].text, "母": edigrees[1].text, "父父": edigrees[2].text, "父母": edigrees[3].text, "母父": edigrees[4].text, "母母": edigrees[5].text
+    }
+    horse.set_edigrees(edigree_dict)
     print("取得しました。\n")
-    return horses
+    return horse
 
 
 # レースの情報を出馬表から取得
@@ -140,7 +146,7 @@ def get_race_data_of_main_race(main_race_url: str):
         around = around_part
 
     # 周回方向
-    race_detail.set_around(StringUtils.replace_shave_parentheses(around))
+    race_detail.set_around(StringUtils.replace_shavet_parentheses(around))
 
     # 馬場状態の箇所を取得
     race_condition = data_line1.select("span[class^=Item04]")
@@ -245,7 +251,7 @@ def get_horse_data_of_race_results(race_results_url: str):
         race.set_pace(StringUtils.replace_shave_blank(
             results_data[21].text))
         # 上がりタイム
-        race.set_final_time(StringUtils.replace_shave_blank(
+        race.set_final_rap_time(StringUtils.replace_shave_blank(
             results_data[22].text))
         # 馬体重
         race.set_body_weight(StringUtils.replace_shave_blank(
