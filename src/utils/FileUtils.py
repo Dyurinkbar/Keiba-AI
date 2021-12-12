@@ -1,5 +1,5 @@
-'''ファイル操作'''
-import utils.PathUtils as PathUtils
+"""ファイル操作"""
+import PathUtils
 
 
 # 文字データをtxtに出力

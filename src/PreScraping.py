@@ -1,4 +1,4 @@
-'''データを処理するためのデータを取得'''
+"""データを処理するためのデータを取得"""
 from bs4 import BeautifulSoup as bs
 
 import utils.SoupUtils as SoupUtils

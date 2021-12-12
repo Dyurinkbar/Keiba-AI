@@ -1,4 +1,4 @@
-'''BeautifulSoupの共通処理'''
+"""BeautifulSoupの共通処理"""
 import requests
 from bs4 import BeautifulSoup as bs
 

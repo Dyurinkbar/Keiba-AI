@@ -1,4 +1,4 @@
-'''データを整理'''
+"""データを整理"""
 import instance.Horse as Horse
 import instance.RaceDetail as RaceDetail
 

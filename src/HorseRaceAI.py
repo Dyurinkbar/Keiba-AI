@@ -1,4 +1,4 @@
-'''競馬AIのメインクラス'''
+"""競馬AIのメインクラス"""
 import requests
 from bs4 import BeautifulSoup as bs
 
@@ -76,7 +76,7 @@ def main():
 
 # URLを入力
 def input_race_url():
-    while(True):
+    while True:
         print("\nレースのURLを入力してください。\n→ ", end="")
         race_url = input()
         if str(race_url).contains("https://race.netkeiba.com/race/shutuba.html?race_id="):

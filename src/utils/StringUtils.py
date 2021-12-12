@@ -1,4 +1,4 @@
-'''文字列の操作'''
+"""文字列の操作"""
 
 
 # 文字列の空白と改行コードをなくして返却
@@ -33,5 +33,5 @@ def replace_date_to_slash(word: str):
 
 
 # 文字列の空白と丸括弧をなくして返却
-def replace_shavet_parentheses(word: str):
+def replace_shave_parentheses(word: str):
     return replace_shave_blank(word).replace("(", "").replace(")", "")
