@@ -16,3 +16,5 @@ def get_around_from_venue(venue: str):
     return around
 
 # レース名を出馬表→DB表記に変更
+def change_race_name_to_database_format():
+    pass

@@ -61,8 +61,15 @@ def get_horses_data_of_status_by_main_race(main_race_url: str):
     return horses
 
 
-# 競走馬のDBから取得できるデータを抽出
+# 競走馬のDBから取得できるデータを抽出(リスト)
 def get_horses_data_of_status_by_database(horses: Horse):
+    for horse in horses:
+        horse = get_horse_data_of_status_by_database(horse)
+    return horses
+
+
+# 競走馬のDBから取得できるデータを抽出
+def get_horse_data_of_status_by_database(horse: Horse):
     print("\n出走馬のデータをデータベースから取得します。")
 
     for horse in horses:
@@ -94,7 +101,7 @@ def get_horses_data_of_status_by_database(horses: Horse):
         }
         horse.edigrees = edigree_dict
     print("取得しました。\n")
-    return horses
+    return horse
 
 
 # レースの情報を出馬表から取得

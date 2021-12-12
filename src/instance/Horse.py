@@ -161,13 +161,17 @@ class Horse:
 
     # 情報を出力
     def print_horse_data(self):
-        print(self.waku + "枠 " + self.umaban +
-              "番 " + self.name + " " + self.seirei + " 斤量" + self.penalty_weight + "kg " + self.trainer_area + " ")
-        print(self.jockey + " 騎手")
-        print(self.birthday + " 生まれ")
-        print("調教師：" + self.trainer)
-        print("馬主　：" + self.owner)
-        print("生産者：" + self.breeder)
+        print(self.name + "\n")
+        print("枠　　　：" + self.waku)
+        print("番　　　：" + self.umaban)
+        print("性齢　　：" + self.seirei)
+        print("斤量　　：" + self.penalty_weight)
+        print("厩舎地方：" + self.trainer_area)
+        print("騎手　　：" + self.jockey)
+        print("誕生日　：" + self.birthday)
+        print("調教師　：" + self.trainer)
+        print("馬主　　：" + self.owner)
+        print("生産者　：" + self.breeder)
         print("母　：" + self.edigrees["母"])
         print("父　：" + self.edigrees["父"])
         print("父母：" + self.edigrees["父母"])

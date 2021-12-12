@@ -4,9 +4,9 @@ import PathUtils
 
 # 文字データをtxtに出力
 def file_write_to_txt(content: str, file_name: str):
+    file_name += ".txt"
     try:
-        with open(PathUtils.path_out + file_name +
-                  ".txt", "w", encoding="UTF-8") as txt_file:
+        with open(PathUtils.path_out + file_name, "w", encoding="UTF-8") as txt_file:
             txt_file.write(content)
             print("\n" + file_name + "を出力しました。\n")
     except:
