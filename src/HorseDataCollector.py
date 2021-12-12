@@ -1,4 +1,4 @@
-'''競走馬のデータを取得'''
+"""競走馬のデータを取得"""
 from bs4 import BeautifulSoup as bs
 import re
 import chromedriver_binary
@@ -47,14 +47,14 @@ def get_horses_data_of_status_by_main_race(main_race_url: str):
         # インスタンス生成
         horse = Horse.Horse()
         # 情報をセット
-        horse.set_waku(horse_waku[n].text)
-        horse.set_umaban(horse_umaban[n].text)
-        horse.set_name(horse_name[n].text)
-        horse.set_seirei(horse_seirei[n].text)
-        horse.set_penalty_weight(horse_penalty_weight[n].text)
-        horse.set_jockey(StringUtils.replace_shave_blank(jockey_name[n].text))
-        horse.set_trainer_area(horse_trainer_place[n].text)
-        horse.set_race_results_url(race_results_url[n].attrs['href'])
+        horse.waku = horse_waku[n].text
+        horse.umaban = horse_umaban[n].text
+        horse.name = horse_name[n].text
+        horse.seirei = horse_seirei[n].text
+        horse.penalty_weight = horse_penalty_weight[n].text
+        horse.jockey = StringUtils.replace_shave_blank(jockey_name[n].text)
+        horse.trainer_area = horse_trainer_place[n].text
+        horse.race_results_url = race_results_url[n].attrs['href']
         horses.append(horse)
 
     print("取得しました。\n")
@@ -66,33 +66,33 @@ def get_horses_data_of_status_by_database(horses: Horse):
     print("\n出走馬のデータをデータベースから取得します。")
 
     for horse in horses:
-        print(f"{StringUtils.replace_shave_blank(horse.get_name())} から取得")
-        # 競走馬オブジェクトから、レース成績URLを取得
-        race_results_url = horse.get_race_results_url()
+        print(f"{StringUtils.replace_shave_blank(horse.name)} から取得")
         # URLからHTMLを取得
-        soup = SoupUtils.get_soup(race_results_url)
+        soup = SoupUtils.get_soup(horse.race_results_url)
 
         # プロフィール部分取得
         profile = soup.find(class_=re.compile(
             "db_prof_area_02")).find("table")
 
         # 生年月日
-        horse.set_birthday(profile.find_all("td")[0].text)
+        horse.birthday = profile.find_all("td")[0].text
         # 調教師
-        horse.set_trainer(profile.find("a", href=re.compile("/owner/")).text)
+        horse.trainer = profile.find("a", href=re.compile("/owner/")).text
         # 馬主
-        horse.set_owner(profile.find("a", href=re.compile("/owner/")).text)
+        horse.owner = profile.find("a", href=re.compile("/owner/")).text
         # 生産者
-        horse.set_breeder(profile.find(
-            "a", href=re.compile("/breeder/")).text)
+        horse.breeder = profile.find(
+            "a", href=re.compile("/breeder/")).text
 
         # 血統部分取得
         edigrees = soup.find(class_="blood_table").find_all("a")
         # 血統
         edigree_dict = {
-            "父": edigrees[0].text, "母": edigrees[1].text, "父父": edigrees[2].text, "父母": edigrees[3].text, "母父": edigrees[4].text, "母母": edigrees[5].text
+            "父": edigrees[0].text, "母": edigrees[1].text,
+            "父父": edigrees[2].text, "父母": edigrees[3].text,
+            "母父": edigrees[4].text, "母母": edigrees[5].text
         }
-        horse.set_edigrees(edigree_dict)
+        horse.edigrees = edigree_dict
     print("取得しました。\n")
     return horses
 
@@ -107,11 +107,11 @@ def get_race_data_of_main_race(main_race_url: str):
     race_detail = RaceDetail.RaceDetail()
 
     # レース名取得
-    race_detail.set_race_name(StringUtils.replace_shave_blank(
-        soup.select_one("div.RaceName").text))
+    race_detail.race_name = StringUtils.replace_shave_blank(
+        soup.select_one("div.RaceName").text)
 
     # レースURLをセット
-    race_detail.set_race_url(main_race_url)
+    race_detail.race_url = main_race_url
 
     # 1行目の箇所取得
     data_line1 = soup.find("div", class_="RaceData01")
@@ -119,8 +119,7 @@ def get_race_data_of_main_race(main_race_url: str):
     # 距離(起点)の箇所を取得
     distance_part = data_line1.find("span")
     # 距離と馬場
-    race_detail.set_distance_and_racetrack(
-        StringUtils.replace_shave_blank(distance_part.text))
+    race_detail.distance_and_racetrack = StringUtils.replace_shave_blank(distance_part.text)
 
     # 内外回りと天候の箇所を取得
     around_part = distance_part.next_sibling
@@ -133,21 +132,21 @@ def get_race_data_of_main_race(main_race_url: str):
         around = strs[0]
         weather = strs[1]
         # 天候
-        race_detail.set_weather(weather.split(":")[1])
+        race_detail.weather = weather.split(":")[1]
     except:
         print("天候は存在しないか取得できません。")
         # 内外回りは存在するので、取得
         around = around_part
 
     # 周回方向
-    race_detail.set_around(StringUtils.replace_shave_parentheses(around))
+    race_detail.around = StringUtils.replace_shave_parentheses(around)
 
     # 馬場状態の箇所を取得
     race_condition = data_line1.select("span[class^=Item04]")
     # 解析日によって表示されていない可能性があるので、チェック
     try:
         # 馬場状態
-        race_detail.set_race_condition(race_condition[0].text.split("馬場:")[1])
+        race_detail.race_condition = race_condition[0].text.split("馬場:")[1]
     except:
         print("馬場状態は存在しないか取得できません。")
 
@@ -156,15 +155,15 @@ def get_race_data_of_main_race(main_race_url: str):
 
     # tagがないので、順に取得
     # 開催場所
-    race_detail.set_venue(data_line2[1].text)
+    race_detail.venue = data_line2[1].text
     # 出馬条件
-    race_detail.set_entry_terms(data_line2[3].text)
+    race_detail.entry_terms = data_line2[3].text
     # クラス
-    race_detail.set_grade(data_line2[4].text)
+    race_detail.grade = data_line2[4].text
     # 斤量設定
-    race_detail.set_penalty_weight_setting(data_line2[6].text)
+    race_detail.penalty_weight_setting = data_line2[6].text
     # 出馬頭数
-    race_detail.set_horse_head_count(data_line2[7].text)
+    race_detail.horse_head_count = data_line2[7].text
 
     print("取得しました。\n")
     return race_detail
@@ -194,62 +193,61 @@ def get_horse_data_of_race_results(race_results_url: str):
         # tdタグを順に読む
         results_data = race_result.find_all("td")
         # 日付
-        race.set_date(StringUtils.replace_shave_blank(
-            results_data[0].text))
+        race.date = StringUtils.replace_shave_blank(
+            results_data[0].text)
         # 開催場所
-        race.set_venue(StringUtils.replace_shave_blank(
-            results_data[1].text))
+        race.venue = StringUtils.replace_shave_blank(
+            results_data[1].text)
         # 天気
-        race.set_weather(StringUtils.replace_shave_blank(
-            results_data[2].text))
+        race.weather = StringUtils.replace_shave_blank(
+            results_data[2].text)
         # レース名
-        race.set_race_name(StringUtils.replace_shave_blank(
-            results_data[4].text))
+        race.race_name = StringUtils.replace_shave_blank(
+            results_data[4].text)
         # レースURL
-        race.set_race_url("https://db.netkeiba.com" +
-                          results_data[4].find().attrs['href'])
+        race.race_url = "https://db.netkeiba.com" + results_data[4].find().attrs['href']
         # 出馬頭数
-        race.set_horse_head_count(StringUtils.replace_shave_blank(
-            results_data[6].text))
+        race.horse_head_count = StringUtils.replace_shave_blank(
+            results_data[6].text)
         # 枠
-        race.set_waku(StringUtils.replace_shave_blank(
-            results_data[7].text))
+        race.waku = StringUtils.replace_shave_blank(
+            results_data[7].text)
         # 馬番
-        race.set_umaban(StringUtils.replace_shave_blank(
-            results_data[8].text))
+        race.umaban = StringUtils.replace_shave_blank(
+            results_data[8].text)
         # 着順
-        race.set_rank(StringUtils.replace_shave_blank(
-            results_data[11].text))
+        race.rank = StringUtils.replace_shave_blank(
+            results_data[11].text)
         # 鞍上
-        race.set_jockey(StringUtils.replace_shave_blank(
-            results_data[12].text))
+        race.jockey = StringUtils.replace_shave_blank(
+            results_data[12].text)
         # 斤量
-        race.set_penalty_weight(StringUtils.replace_shave_blank(
-            results_data[13].text))
+        race.penalty_weight = StringUtils.replace_shave_blank(
+            results_data[13].text)
         # 距離
-        race.set_race_distance(StringUtils.replace_shave_blank(
-            results_data[14].text))
+        race.race_distance = StringUtils.replace_shave_blank(
+            results_data[14].text)
         # 馬場状態
-        race.set_race_condition(StringUtils.replace_shave_blank(
-            results_data[15].text))
+        race.race_condition = StringUtils.replace_shave_blank(
+            results_data[15].text)
         # タイム
-        race.set_time(StringUtils.replace_shave_blank(
-            results_data[17].text))
+        race.time = StringUtils.replace_shave_blank(
+            results_data[17].text)
         # 着差
-        race.set_reach_difference(StringUtils.replace_shave_blank(
-            results_data[18].text))
+        race.reach_difference = StringUtils.replace_shave_blank(
+            results_data[18].text)
         # 通過着順
-        race.set_passing_ranks(StringUtils.replace_shave_blank(
-            results_data[20].text))
+        race.passing_ranks = StringUtils.replace_shave_blank(
+            results_data[20].text)
         # ペース
-        race.set_pace(StringUtils.replace_shave_blank(
-            results_data[21].text))
+        race.pace = StringUtils.replace_shave_blank(
+            results_data[21].text)
         # 上がりタイム
-        race.set_final_time(StringUtils.replace_shave_blank(
-            results_data[22].text))
+        race.final_rap_time = StringUtils.replace_shave_blank(
+            results_data[22].text)
         # 馬体重
-        race.set_body_weight(StringUtils.replace_shave_blank(
-            results_data[23].text))
+        race.body_weight = StringUtils.replace_shave_blank(
+            results_data[23].text)
         # リストに追加
         races.append(race)
 
@@ -272,10 +270,10 @@ def get_race_results_by_database(race_db_url: str):
     race_detail_part = soup.find("dl", class_="racedata fc")
 
     # レース名
-    race_detail.set_race_name(StringUtils.replace_shave_blank(
-        race_detail_part.find("h1").text))
+    race_detail.race_name = StringUtils.replace_shave_blank(
+        race_detail_part.find("h1").text)
     # レースURL
-    race_detail.set_race_url(race_db_url)
+    race_detail.race_url = race_db_url
     # レースのクラスをタイトルから調べる
 
     # レース情報部分の取得1
@@ -289,15 +287,12 @@ def get_race_results_by_database(race_db_url: str):
         race_data_strs[0], ["左", "右", "内", "外", "直", "線"])
 
     # 距離と馬場
-    race_detail.set_distance_and_racetrack(
-        StringUtils.replace_shave_blank(distance_and_racetrack))
+    race_detail.distance_and_racetrack = StringUtils.replace_shave_blank(distance_and_racetrack)
 
     # 天候
-    race_detail.set_weather(
-        StringUtils.replace_shave_blank(race_data_strs[1].split(": ")[1]))
+    race_detail.weather = StringUtils.replace_shave_blank(race_data_strs[1].split(": ")[1])
     # 馬場状態
-    race_detail.set_race_condition(
-        StringUtils.replace_shave_blank(race_data_strs[2].split(": ")[1]))
+    race_detail.race_condition = StringUtils.replace_shave_blank(race_data_strs[2].split(": ")[1])
 
     # レース情報部分の取得2
     race_data_part2 = soup.find(
@@ -307,29 +302,27 @@ def get_race_results_by_database(race_db_url: str):
     race_data_strs = race_data_part2.split(" ")
 
     # 開催日
-    race_detail.set_date(
-        StringUtils.replace_date_to_slash(race_data_strs[0]))
+    race_detail.date = StringUtils.replace_date_to_slash(race_data_strs[0])
 
     # 開催場所(２文字の地名しかないので妥協)
     venue = race_data_strs[1].split("回")[1][0:2]
-    race_detail.set_venue(venue)
+    race_detail.venue = venue
     # 内外回り
-    race_detail.set_around(HorseDataUtils.get_around_from_venue(venue))
+    race_detail.around = HorseDataUtils.get_around_from_venue(venue)
 
     # 出馬条件
-    race_detail.set_entry_terms(
-        StringUtils.replace_shave_blank(race_data_strs[2].split("(")[0]))
+    race_detail.entry_terms = StringUtils.replace_shave_blank(race_data_strs[2].split("(")[0])
 
     # 斤量設定
     pws = race_data_strs[2].split("(")[3].split(")")[0]
-    race_detail.set_penalty_weight_setting(pws)
+    race_detail.penalty_weight_setting = pws
 
     # レース結果部分を取得
     race_results_db_part = soup.find("table",
                                      class_=re.compile("race_table_01 nk_tb_common")).find_all("tr")
 
     # レース結果部分の取得要素数が競走馬の出馬頭数なので、セット
-    race_detail.set_horse_head_count(len(race_results_db_part))
+    race_detail.horse_head_count = len(race_results_db_part)
 
     '''レース結果取得'''
     for n in range(len(race_results_db_part)):
@@ -344,55 +337,55 @@ def get_race_results_by_database(race_db_url: str):
         race_result_db = RaceResultDB.RaceResultDB()
 
         # 着順
-        race_result_db.set_rank(StringUtils.replace_shave_blank(
+        race_result_db.rank = (StringUtils.replace_shave_blank(
             race_results_db_part_td_tags[0].text))
         # 枠
-        race_result_db.set_waku(StringUtils.replace_shave_blank(
+        race_result_db.waku = (StringUtils.replace_shave_blank(
             race_results_db_part_td_tags[1].text))
         # 馬番
-        race_result_db.set_umaban(StringUtils.replace_shave_blank(
+        race_result_db.umaban = (StringUtils.replace_shave_blank(
             race_results_db_part_td_tags[2].text))
         # 馬名
-        race_result_db.set_horse_name(StringUtils.replace_shave_blank(
+        race_result_db.horse_name = (StringUtils.replace_shave_blank(
             race_results_db_part_td_tags[3].text))
         # 競走成績URL
-        race_result_db.set_race_results_url("https://db.netkeiba.com/" +
-                                            race_results_db_part_td_tags[3].find("a").attrs['href'])
+        race_result_db.race_results_url = ("https://db.netkeiba.com/" +
+                                           race_results_db_part_td_tags[3].find("a").attrs['href'])
         # 性齢
-        race_result_db.set_seirei(StringUtils.replace_shave_blank(
+        race_result_db.seirei = (StringUtils.replace_shave_blank(
             race_results_db_part_td_tags[4].text))
         # 斤量
-        race_result_db.set_penalty_weight(StringUtils.replace_shave_blank(
+        race_result_db.penalty_weight = (StringUtils.replace_shave_blank(
             race_results_db_part_td_tags[5].text))
         # 騎手
-        race_result_db.set_jockey(StringUtils.replace_shave_blank(
+        race_result_db.jockey = (StringUtils.replace_shave_blank(
             race_results_db_part_td_tags[6].text))
         # タイム
-        race_result_db.set_time(StringUtils.replace_shave_blank(
+        race_result_db.time = (StringUtils.replace_shave_blank(
             race_results_db_part_td_tags[7].text))
         # 着差
-        race_result_db.set_reach_difference(StringUtils.replace_shave_blank(
+        race_result_db.reach_difference = (StringUtils.replace_shave_blank(
             race_results_db_part_td_tags[8].text))
         # 通過着順
-        race_result_db.set_passing_ranks(StringUtils.replace_shave_blank(
+        race_result_db.passing_ranks = (StringUtils.replace_shave_blank(
             race_results_db_part_td_tags[10].text))
         # 上りタイム
-        race_result_db.set_final_rap_time(StringUtils.replace_shave_blank(
+        race_result_db.final_rap_time = (StringUtils.replace_shave_blank(
             race_results_db_part_td_tags[11].text))
         # オッズ
-        race_result_db.set_odds(StringUtils.replace_shave_blank(
+        race_result_db.odds = (StringUtils.replace_shave_blank(
             race_results_db_part_td_tags[12].text))
         # 人気
-        race_result_db.set_favorite(StringUtils.replace_shave_blank(
+        race_result_db.favorite = (StringUtils.replace_shave_blank(
             race_results_db_part_td_tags[13].text))
         # 馬体重
-        race_result_db.set_body_weight(StringUtils.replace_shave_blank(
+        race_result_db.body_weight = (StringUtils.replace_shave_blank(
             race_results_db_part_td_tags[14].text))
         # 厩舎地方
-        race_result_db.set_trainer_area(StringUtils.replace_shave_blank(
+        race_result_db.trainer_area = (StringUtils.replace_shave_blank(
             race_results_db_part_td_tags[18].text))
         # 馬主
-        race_result_db.set_owner(StringUtils.replace_shave_blank(
+        race_result_db.owner = (StringUtils.replace_shave_blank(
             race_results_db_part_td_tags[19].text))
 
         # リストに格納
@@ -492,7 +485,7 @@ def get_past_race_url_by_grade_race_schedule_page(race_name: str, years: int):
     # 引数の年数分、過去のレースのURLを取得
     for n in range(years):
         # 一つ前の年を選択
-        select.select_by_index(len(select.options)(n - 1))
+        select.select_by_index(len(select.options(n - 1)))
         sleep(1)
 
         # 「表示」ボタンをクリック
