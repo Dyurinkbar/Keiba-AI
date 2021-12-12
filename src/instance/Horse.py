@@ -1,6 +1,6 @@
-'''馬の状態を保持するオブジェクト'''
-from instance.RaceResult import RaceResult
-from instance.RaceDetail import RaceDetail
+"""馬の状態を保持するオブジェクト"""
+import RaceResult
+import RaceDetail
 
 
 class Horse:
@@ -20,102 +20,141 @@ class Horse:
         self.birthday = "?"
 
     # 馬名
-    def set_name(self, name):
-        self.name = name
-
-    def get_name(self):
+    @property
+    def name(self):
         return self.name
 
-    # 鞍上
-    def set_jockey(self, jockey):
-        self.jockey = jockey
+    @name.setter
+    def name(self, name):
+        self.name = name
 
-    def get_jockey(self):
+    # 鞍上
+    @property
+    def jockey(self):
         return self.jockey
 
-    # 枠
-    def set_waku(self, waku):
-        self.waku = waku
+    @jockey.setter
+    def jockey(self, jockey):
+        self.jockey = jockey
 
-    def get_waku(self):
+    # 枠
+
+    @property
+    def waku(self):
         return self.waku
 
-    # 馬番
-    def set_umaban(self, umaban):
-        self.umaban = umaban
+    @waku.setter
+    def waku(self, waku):
+        self.waku = waku
 
-    def get_umaban(self):
+    # 馬番
+
+    @property
+    def umaban(self):
         return self.umaban
 
-    # 性齢
-    def set_seirei(self, seirei):
-        self.seirei = seirei
+    @umaban.setter
+    def umaban(self, umaban):
+        self.umaban = umaban
 
-    def get_seirei(self):
+    # 性齢
+
+    @property
+    def seirei(self):
         return self.seirei
 
-    # 斤量
-    def set_penalty_weight(self, penalty_weight):
-        self.penalty_weight = penalty_weight
+    @seirei.setter
+    def seirei(self, seirei):
+        self.seirei = seirei
 
-    def get_penalty_weight(self):
+    # 斤量
+
+    @property
+    def penalty_weight(self):
         return self.penalty_weight
 
-    # 厩舎地方
-    def set_trainer_area(self, trainer_area):
-        self.trainer_area = trainer_area
+    @penalty_weight.setter
+    def penalty_weight(self, penalty_weight):
+        self.penalty_weight = penalty_weight
 
-    def get_trainer_area(self):
+    # 厩舎地方
+
+    @property
+    def trainer_area(self):
         return self.trainer_area
 
-    # 競走成績URL
-    def set_race_results_url(self, race_results_url):
-        self.race_results_url = race_results_url
+    @trainer_area.setter
+    def trainer_area(self, trainer_area):
+        self.trainer_area = trainer_area
 
-    def get_race_results_url(self):
+    # 競走成績URL
+
+    @property
+    def race_results_url(self):
         return self.race_results_url
 
-    # 調教師
-    def set_trainer(self, trainer):
-        self.trainer = trainer
+    @race_results_url.setter
+    def race_results_url(self, race_results_url):
+        self.race_results_url = race_results_url
 
-    def get_trainer(self):
+    # 調教師
+
+    @property
+    def trainer(self):
         return self.trainer
 
-    # 馬主
-    def set_owner(self, owner):
-        self.owner = owner
+    @trainer.setter
+    def trainer(self, trainer):
+        self.trainer = trainer
 
-    def get_owner(self):
+    # 馬主
+
+    @property
+    def owner(self):
         return self.owner
 
-    # 生産者
-    def set_breeder(self, breeder):
-        self.breeder = breeder
+    @owner.setter
+    def owner(self, owner):
+        self.owner = owner
 
-    def get_breeder(self):
+    # 生産者
+    @property
+    def breeder(self):
         return self.breeder
 
-    # 生年月日
-    def set_birthday(self, birthday):
-        self.birthday = birthday
+    @breeder.setter
+    def breeder(self, breeder):
+        self.breeder = breeder
 
-    def get_birthday(self):
+    # 生年月日
+
+    @property
+    def birthday(self):
         return self.birthday
 
-    # 血統
-    def set_edigrees(self, edigrees):
-        self.edigrees = edigrees
+    @birthday.setter
+    def birthday(self, birthday):
+        self.birthday = birthday
 
-    def get_edigrees(self):
+    # 血統
+
+    @property
+    def edigrees(self):
         return self.edigrees
 
-    # 競走成績オブジェクト
-    def set_race_results(self, race_results: RaceResult):
-        self.race_results = race_results
+    @edigrees.setter
+    def edigrees(self, edigrees):
+        self.edigrees = edigrees
 
-    def get_race_results(self):
+    # 競走成績オブジェクト
+
+    @property
+    def race_results(self):
         return self.race_results
+
+    @race_results.setter
+    def race_results(self, race_results: RaceResult):
+        self.race_results = race_results
 
     def add_race_results(self, race_result: RaceResult):
         self.race_results.append(race_result)

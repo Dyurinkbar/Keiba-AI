@@ -1,4 +1,4 @@
-'''レース成績のオブジェクトクラス'''
+"""レース成績のオブジェクトクラス"""
 
 
 class RaceResult:
@@ -20,141 +20,198 @@ class RaceResult:
         self.reach_difference = "?"
         self.passing_ranks = "?"
         self.pace = "?"
-        self.final_time = "?"
+        self.final_rap_time = "?"
         self.body_weight = "?"
 
     # 日付
-    def set_date(self, date):
-        self.date = date
 
-    def get_date(self):
+    @property
+    def date(self):
         return self.date
 
-    # 開催場所
-    def set_venue(self, venue):
-        self.venue = venue
+    @date.setter
+    def date(self, date):
+        self.date = date
 
-    def get_venue(self):
+    # 開催場所
+
+    @property
+    def venue(self):
         return self.venue
 
-    # 天気
-    def set_weather(self, weather):
-        self.weather = weather
+    @venue.setter
+    def venue(self, venue):
+        self.venue = venue
 
-    def get_weather(self):
+    # 天気
+
+    @property
+    def weather(self):
         return self.weather
 
-    # レース名
-    def set_race_name(self, race_name):
-        self.race_name = race_name
+    @weather.setter
+    def weather(self, weather):
+        self.weather = weather
 
-    def get_race_name(self):
+    # レース名
+
+    @property
+    def race_name(self):
         return self.race_name
 
-    # レース名
-    def set_race_url(self, race_url):
-        self.race_url = race_url
+    @race_name.setter
+    def race_name(self, race_name):
+        self.race_name = race_name
 
-    def get_race_url(self):
+    # レース名
+
+    @property
+    def race_url(self):
         return self.race_url
 
-    # 出馬頭数
-    def set_horse_head_count(self, horse_head_count):
-        self.horse_head_count = horse_head_count
+    @race_url.setter
+    def race_url(self, race_url):
+        self.race_url = race_url
 
-    def get_horse_head_count(self):
+    # 出馬頭数
+
+    @property
+    def horse_head_count(self):
         return self.horse_head_count
 
-    # 枠
-    def set_waku(self, waku):
-        self.waku = waku
+    @horse_head_count.setter
+    def horse_head_count(self, horse_head_count):
+        self.horse_head_count = horse_head_count
 
-    def get_waku(self):
+    # 枠
+
+    @property
+    def waku(self):
         return self.waku
 
-    # 馬番
-    def set_umaban(self, umaban):
-        self.umaban = umaban
+    @waku.setter
+    def waku(self, waku):
+        self.waku = waku
 
-    def get_umaban(self):
+    # 馬番
+
+    @property
+    def umaban(self):
         return self.umaban
 
-    # 着順
-    def set_rank(self, rank):
-        self.rank = rank
+    @umaban.setter
+    def umaban(self, umaban):
+        self.umaban = umaban
 
-    def get_rank(self):
+    # 着順
+
+    @property
+    def rank(self):
         return self.rank
 
-    # 鞍上
-    def set_jockey(self, jockey):
-        self.jockey = jockey
+    @rank.setter
+    def rank(self, rank):
+        self.rank = rank
 
-    def get_jockey(self):
+    # 鞍上
+
+    @property
+    def jockey(self):
         return self.jockey
 
-    # 斤量
-    def set_penalty_weight(self, penalty_weight):
-        self.penalty_weight = penalty_weight
+    @jockey.setter
+    def jockey(self, jockey):
+        self.jockey = jockey
 
-    def get_penalty_weight(self):
+    # 斤量
+
+    @property
+    def penalty_weight(self):
         return self.penalty_weight
 
-    # レースの距離
-    def set_race_distance(self, distance):
-        self.distance = distance
+    @penalty_weight.setter
+    def penalty_weight(self, penalty_weight):
+        self.penalty_weight = penalty_weight
 
-    def get_distance(self):
+    # レースの距離
+
+    @property
+    def race_distance(self):
         return self.distance
 
-    # 馬場状態
-    def set_race_condition(self, race_condition):
-        self.race_condition = race_condition
+    @race_distance.setter
+    def race_distance(self, distance):
+        self.distance = distance
 
-    def get_race_situation(self):
+    # 馬場状態
+
+    @property
+    def race_condition(self):
         return self.race_condition
 
-    # タイム
-    def set_time(self, time):
-        self.time = time
+    @race_condition.setter
+    def race_condition(self, race_condition):
+        self.race_condition = race_condition
 
-    def get_time(self):
+    # タイム
+
+    @property
+    def time(self):
         return self.time
 
-    # 着差
-    def set_reach_difference(self, reach_difference):
-        self.reach_difference = reach_difference
+    @time.setter
+    def time(self, time):
+        self.time = time
 
-    def get_reach_difference(self):
+    # 着差
+
+    @property
+    def reach_difference(self):
         return self.reach_difference
 
-    # 通過着順
-    def set_passing_ranks(self, passing_ranks):
-        self.passing_ranks = passing_ranks
+    @reach_difference.setter
+    def reach_difference(self, reach_difference):
+        self.reach_difference = reach_difference
 
-    def get_passing_ranks(self):
+    # 通過着順
+
+    @property
+    def passing_ranks(self):
         return self.passing_ranks
 
-    # ペース
-    def set_pace(self, pace):
-        self.pace = pace
+    @passing_ranks.setter
+    def passing_ranks(self, passing_ranks):
+        self.passing_ranks = passing_ranks
 
-    def get_pace(self):
+    # ペース
+
+    @property
+    def pace(self):
         return self.pace
 
-    # 上がりタイム
-    def set_final_rap_time(self, final_rap_time):
-        self.final_rap_time = final_rap_time
+    @pace.setter
+    def pace(self, pace):
+        self.pace = pace
 
-    def get_final_rap_time(self):
+    # 上がりタイム
+
+    @property
+    def final_rap_time(self):
         return self.final_rap_time
 
-    # 馬体重
-    def set_body_weight(self, body_weight):
-        self.body_weight = body_weight
+    @final_rap_time.setter
+    def final_rap_time(self, final_rap_time):
+        self.final_rap_time = final_rap_time
 
-    def get_body_weight(self):
+    # 馬体重
+
+    @property
+    def body_weight(self):
         return self.body_weight
+
+    @body_weight.setter
+    def body_weight(self, body_weight):
+        self.body_weight = body_weight
 
     # レース成績を表示
     def print_race_result_data(self):
@@ -175,14 +232,14 @@ class RaceResult:
         print("着差　　：" + self.reach_difference)
         print("通過着順：" + self.passing_ranks)
         print("ペース　：" + self.pace)
-        print("上がり　：" + self.final_time)
+        print("上がり　：" + self.final_rap_time)
         print("馬体重　：" + self.body_weight)
         print("\n")
 
 
 '''
-	def set_(self,):
-		self.  =
-	def get_(self):
-		return self.
+    def set_(self,):
+        self.  =
+        def get_(self):
+            return self.
 '''

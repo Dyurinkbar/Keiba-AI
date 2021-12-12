@@ -1,5 +1,5 @@
-'''レース成績(DB)のオブジェクトクラス'''
-import instance.RaceDetail as RaceDetail
+"""レース成績(DB)のオブジェクトクラス"""
+import RaceDetail
 
 
 class RaceResultDB:
@@ -8,12 +8,15 @@ class RaceResultDB:
         self.waku = "?"
         self.umaban = "?"
         self.horse_name = "?"
+        self.race_results_url = "?"
         self.seirei = "?"
         self.penalty_weight = "?"
         self.jockey = "?"
         self.time = "?"
         self.reach_difference = "?"
         self.passing_ranks = "?"
+        self.odds = "?"
+        self.favorite = "?"
         self.final_rap_time = "?"
         self.body_weight = "?"
         self.trainer_area = "?"
@@ -159,3 +162,21 @@ class RaceResultDB:
         print("厩舎地方：" + self.trainer_area)
         print("馬主　　：" + self.owner)
         print("\n")
+
+    rank = property(get_rank, set_rank)
+    waku = property(get_waku, set_waku)
+    umaban = property(get_umaban, set_umaban)
+    horse_name = property(get_horse_name, set_horse_name)
+    race_results_url = property(get_race_results_url, set_race_results_url)
+    seirei = property(get_seirei, set_seirei)
+    penalty_weight = property(get_penalty_weight, set_penalty_weight)
+    jockey = property(get_jockey, set_jockey)
+    time = property(get_time, set_time)
+    reach_difference = property(get_reach_difference, set_reach_difference)
+    passing_ranks = property(get_passing_ranks, set_passing_ranks)
+    odds = property(get_odds, set_odds())
+    favorite = property(get_favorite, set_favorite)
+    final_rap_time = property(get_final_rap_time, set_final_rap_time)
+    body_weight = property(get_body_weight, set_body_weight)
+    trainer_area = property(get_trainer_area, set_trainer_area)
+    owner = property(get_owner, set_owner)
